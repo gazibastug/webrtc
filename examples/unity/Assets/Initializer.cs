@@ -26,4 +26,25 @@ internal static class Initializer
     }
 }
 
+#elif UNITY_IOS && !UNITY_EDITOR
+
+using System.Runtime.InteropServices;
+using UnityEngine;
+
+internal static class Initializer
+{
+    [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
+    private static void OnBeforeSceneLoadRuntimeMethod()
+    {
+        if (!configureRTCAudioSession())
+        {
+            throw new Exception("Failed to configure RTCAudioSession");
+        }
+    }
+
+    [DllImport("__Internal")]
+    [return: MarshalAs(UnmanagedType.U8)]
+    private static extern bool configureRTCAudioSession();
+}
+
 #endif
